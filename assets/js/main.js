@@ -21,6 +21,11 @@ window.addEventListener("scroll", () => {
     lastScrollY = window.scrollY;
 })
 
+// Doi sang dinh dang tien VND
+function vnd(price) {
+    return price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+}
+
 // Close popup 
 const body = document.querySelector("body");
 let     modalContainer = document.querySelectorAll('.modal');
@@ -64,6 +69,10 @@ function decreasingNumber(e) {
     }
 }
 
+
+
+
+
 // Open Search Advanced
 document.querySelector(".filter-btn").addEventListener("click",(e) => {
     e.preventDefault(); 
@@ -103,7 +112,6 @@ function closeSearchMb() {
 
 
 // imgame slider
-
 let slider = document.querySelector('.slider .list');
 let items = document.querySelectorAll('.slider .list .item');
 let next = document.getElementById('next');

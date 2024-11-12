@@ -83,15 +83,15 @@
         <div class="container">
             <ul class="menu-list">
                 <li class="menu-list-item"><a href="" class="menu-link">Trang chủ</a></li>
-                 <li class="menu-list-item">
-                     <a href="#" class="menu-link">Giày Adidas </i></a>
-                        <ul class="dropdowns">
-                         <li class="menu-list-item"><a href="#" class="menu-link">Giày Adidas Nam</a></li>
-                         <li class="menu-list-item"><a href="#" class="menu-link">Giày Adidas Nữ</a></li>
-                         </ul>
-                     </li>
-                         <li class="menu-list-item" ><a href="" class="menu-link">Giày Nike</a></li>
-                      <li class="menu-list-item" ><a href="" class="menu-link">Sandal</a></li>
+                        <li class="menu-list-item" onclick="showCategory('Giày Adidas')">
+                             <a href="#" class="menu-link">Giày Adidas </i></a>
+                            <ul class="dropdowns">
+                                <li class="menu-list-item" onclick="showCategory('Giày Adidas Nam')"><a href="#" class="menu-link">Giày Adidas Nam</a></li>
+                                <li class="menu-list-item" onclick="showCategory('Giày Adidas Nữ')"><a href="#" class="menu-link">Giày Adidas Nữ</a></li>
+                            </ul>
+                         </li>
+                        <li class="menu-list-item" onclick="showCategory('Giày Nike')"><a href="" class="menu-link">Giày Nike</a></li>
+                        <li class="menu-list-item" onclick="showCategory('Sandal')"><a href="" class="menu-link">Sandal</a></li>
             </ul>
         </div>
     </nav>
@@ -179,7 +179,7 @@
         </ul>
         </div>  
     </div> 
-    
+
     </main>
     <script src="assets/js/main.js"></script>
 </body>
