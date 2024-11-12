@@ -280,4 +280,17 @@
     }
 
 
+    // nhóm ai sửa dc thì sửa dùm showCategory nha 
+    function showCategory(category) {
+        let productAll = JSON.parse(localStorage.getItem('products')) || [];
+        let productSearch = productAll.filter(product => 
+            product.category.some(cat => cat.toUpperCase().includes(category.toUpperCase()))
+        );
+        let currentPageSearch = 1;
+        displayList(productSearch, perPage, currentPageSearch);
+        setupPagination(productSearch, perPage, currentPageSearch);
+        document.getElementById('trangchu').classList.remove('hide');
+        document.getElementById("home-title").scrollIntoView();
+    }
+
 
