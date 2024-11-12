@@ -1,3 +1,13 @@
+// Back to top
+window.onscroll = () => {
+    let backtopTop = document.querySelector(".back-to-top")
+    if (document.documentElement.scrollTop > 100) {
+        backtopTop.classList.add("active");
+    } else {
+        backtopTop.classList.remove("active");
+    }
+}
+
 // Auto hide header on scroll
 const headerNav = document.querySelector(".header-bottom");
 let lastScrollY = window.scrollY;
