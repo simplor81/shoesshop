@@ -232,7 +232,7 @@
     }
     
     // Phân trang 
-    let perPage = 15;  
+    let perPage = 10 ;  
     let currentPage = 1;
     let totalPage = 0;
     let perProducts = [];
@@ -280,17 +280,30 @@
     }
 
 
-    // nhóm ai sửa dc thì sửa dùm showCategory nha 
+    
     function showCategory(category) {
+        // Lấy danh sách tất cả sản phẩm từ localStorage
         let productAll = JSON.parse(localStorage.getItem('products')) || [];
-        let productSearch = productAll.filter(product => 
+    
+        // Lọc danh sách sản phẩm dựa trên category được chọn
+        let productSearch = productAll.filter(product =>
             product.category.some(cat => cat.toUpperCase().includes(category.toUpperCase()))
         );
+    
+        // Kiểm tra kết quả lọc
+        console.log("Category selected:", category);
+        console.log("Filtered products:", productSearch);
+    
+        // Thiết lập trang hiện tại và hiển thị kết quả
         let currentPageSearch = 1;
         displayList(productSearch, perPage, currentPageSearch);
         setupPagination(productSearch, perPage, currentPageSearch);
+    
+        // Hiển thị kết quả và di chuyển màn hình tới vị trí của danh sách sản phẩm
         document.getElementById('trangchu').classList.remove('hide');
         document.getElementById("home-title").scrollIntoView();
     }
+    
+    
 
 

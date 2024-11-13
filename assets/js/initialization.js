@@ -69,7 +69,7 @@ function createProduct() {
                 status: 1,
                 title: 'NIKE COURT BOROUGH LOW',
                 img: 'assets/img/nike/dz3674-100-giay-nike-air-force-1-1.jpeg',
-                category: ['Giày Nike',],
+                category: ['Giày Nike'],
                 size:[35,36,40,42],
                 price: 350000
             },
