@@ -235,7 +235,7 @@
     let perPage = 10 ;  
     let currentPage = 1;
     let totalPage = 0;
-    let perProducts = [];
+    let perProducts = [];   
 
     function displayList(productAll, perPage, currentPage) {
         let start = (currentPage - 1) * perPage;
@@ -279,31 +279,231 @@
         return node;
     }
 
+  // Hiển thị chuyên mục
+  function showCategory(category) {
+    document.getElementById('trangchu').classList.remove('hide');
+    document.getElementById('account-user').classList.remove('open');
+    document.getElementById('order-history').classList.remove('open');
+    let productSearch = productAll.filter(value => {
+        return value.category.toString().toUpperCase().includes(category.toUpperCase());
+    })
+    let currentPageSeach = 1;
+    displayList(productSearch, perPage, currentPageSeach);
+    setupPagination(productSearch, perPage, currentPageSeach);
+    document.getElementById("home-title").scrollIntoView();
+}
 
     
-    function showCategory(category) {
-        // Lấy danh sách tất cả sản phẩm từ localStorage
-        let productAll = JSON.parse(localStorage.getItem('products')) || [];
     
-        // Lọc danh sách sản phẩm dựa trên category được chọn
-        let productSearch = productAll.filter(product =>
-            product.category.some(cat => cat.toUpperCase().includes(category.toUpperCase()))
-        );
-    
-        // Kiểm tra kết quả lọc
-        console.log("Category selected:", category);
-        console.log("Filtered products:", productSearch);
-    
-        // Thiết lập trang hiện tại và hiển thị kết quả
-        let currentPageSearch = 1;
-        displayList(productSearch, perPage, currentPageSearch);
-        setupPagination(productSearch, perPage, currentPageSearch);
-    
-        // Hiển thị kết quả và di chuyển màn hình tới vị trí của danh sách sản phẩm
-        document.getElementById('trangchu').classList.remove('hide');
-        document.getElementById("home-title").scrollIntoView();
+
+//Signup && Login Form
+
+    // Chuyen doi qua lai SignUp & Login 
+    let signup = document.querySelector('.signup-link');
+    let login = document.querySelector('.login-link');
+    let container = document.querySelector('.signup-login .modal-container');
+    login.addEventListener('click', () => {
+        container.classList.add('active');
+    })
+
+    signup.addEventListener('click', () => {
+        container.classList.remove('active');
+    })
+
+    let signupbtn = document.getElementById('signup');
+    let loginbtn = document.getElementById('login');
+    let formsg = document.querySelector('.modal.signup-login')
+    signupbtn.addEventListener('click', () => {
+        formsg.classList.add('open');
+        container.classList.remove('active');
+        body.style.overflow = "hidden";
+    })
+
+    loginbtn.addEventListener('click', () => {
+        document.querySelector('.form-message-check-login').innerHTML = '';
+        formsg.classList.add('open');
+        container.classList.add('active');
+        body.style.overflow = "hidden";
+    })
+
+    // Dang nhap & Dang ky
+
+    // Chức năng đăng ký
+    let signupButton = document.getElementById('signup-button');
+    let loginButton = document.getElementById('login-button');
+    signupButton.addEventListener('click', () => {
+        event.preventDefault();
+        let fullNameUser = document.getElementById('fullname').value;
+        let phoneUser = document.getElementById('phone').value;
+        let passwordUser = document.getElementById('password').value;
+        let passwordConfirmation = document.getElementById('password_confirmation').value;
+        let checkSignup = document.getElementById('checkbox-signup').checked;
+        // Check validate
+        if (fullNameUser.length == 0) {
+            document.querySelector('.form-message-name').innerHTML = 'Vui lòng nhập họ vâ tên';
+            document.getElementById('fullname').focus();
+        } else if (fullNameUser.length < 3) {
+            document.getElementById('fullname').value = '';
+            document.querySelector('.form-message-name').innerHTML = 'Vui lòng nhập họ và tên lớn hơn 3 kí tự';
+        } else {
+            document.querySelector('.form-message-name').innerHTML = '';
+        }
+        if (phoneUser.length == 0) {
+            document.querySelector('.form-message-phone').innerHTML = 'Vui lòng nhập vào số điện thoại';
+        } else if (phoneUser.length != 10) {
+            document.querySelector('.form-message-phone').innerHTML = 'Vui lòng nhập vào số điện thoại 10 số';
+            document.getElementById('phone').value = '';
+        } else {
+            document.querySelector('.form-message-phone').innerHTML = '';
+        }
+        if (passwordUser.length == 0) {
+            document.querySelector('.form-message-password').innerHTML = 'Vui lòng nhập mật khẩu';
+        } else if (passwordUser.length < 6) {
+            document.querySelector('.form-message-password').innerHTML = 'Vui lòng nhập mật khẩu lớn hơn 6 kí tự';
+            document.getElementById('password').value = '';
+        } else {
+            document.querySelector('.form-message-password').innerHTML = '';
+        }
+        if (passwordConfirmation.length == 0) {
+            document.querySelector('.form-message-password-confi').innerHTML = 'Vui lòng nhập lại mật khẩu';
+        } else if (passwordConfirmation !== passwordUser) {
+            document.querySelector('.form-message-password-confi').innerHTML = 'Mật khẩu không khớp';
+            document.getElementById('password_confirmation').value = '';
+        } else {
+            document.querySelector('.form-message-password-confi').innerHTML = '';
+        }
+        if (checkSignup != true) {
+            document.querySelector('.form-message-checkbox').innerHTML = 'Vui lòng check đăng ký';
+        } else {
+            document.querySelector('.form-message-checkbox').innerHTML = '';
+        }
+
+        if (fullNameUser && phoneUser && passwordUser && passwordConfirmation && checkSignup) {
+            if (passwordConfirmation == passwordUser) {
+                let user = {
+                    fullname: fullNameUser,
+                    phone: phoneUser,
+                    password: passwordUser,
+                    address: '',
+                    email: '',
+                    status: 1,
+                    join: new Date(),
+                    cart: [],
+                    userType: 0
+                }
+                let accounts = localStorage.getItem('accounts') ? JSON.parse(localStorage.getItem('accounts')) : [];
+                let checkloop = accounts.some(account => {
+                    return account.phone == user.phone;
+                })
+                if (!checkloop) {
+                    accounts.push(user);
+                    localStorage.setItem('accounts', JSON.stringify(accounts));
+                    localStorage.setItem('currentuser', JSON.stringify(user));
+                    toast({ title: 'Thành công', message: 'Tạo thành công tài khoản !', type: 'success', duration: 3000 });
+                    closeModal();
+                    kiemtradangnhap();
+                    updateAmount();
+                } else {
+                    toast({ title: 'Thất bại', message: 'Tài khoản đã tồn tại !', type: 'error', duration: 3000 });
+                }
+            } else {
+                toast({ title: 'Thất bại', message: 'Sai mật khẩu !', type: 'error', duration: 3000 });
+            }
+        }
     }
-    
-    
+    )
 
+    // Dang nhap
+    loginButton.addEventListener('click', () => {
+        event.preventDefault();
+        let phonelog = document.getElementById('phone-login').value;
+        let passlog = document.getElementById('password-login').value;
+        let accounts = JSON.parse(localStorage.getItem('accounts'));
+
+        if (phonelog.length == 0) {
+            document.querySelector('.form-message.phonelog').innerHTML = 'Vui lòng nhập vào số điện thoại';
+        } else if (phonelog.length != 10) {
+            document.querySelector('.form-message.phonelog').innerHTML = 'Vui lòng nhập vào số điện thoại 10 số';
+            document.getElementById('phone-login').value = '';
+        } else {
+            document.querySelector('.form-message.phonelog').innerHTML = '';
+        }
+
+        if (passlog.length == 0) {
+            document.querySelector('.form-message-check-login').innerHTML = 'Vui lòng nhập mật khẩu';
+        } else if (passlog.length < 6) {
+            document.querySelector('.form-message-check-login').innerHTML = 'Vui lòng nhập mật khẩu lớn hơn 6 kí tự';
+            document.getElementById('passwordlogin').value = '';
+        } else {
+            document.querySelector('.form-message-check-login').innerHTML = '';
+        }
+
+        if (phonelog && passlog) {
+            let vitri = accounts.findIndex(item => item.phone == phonelog);
+            if (vitri == -1) {
+                toast({ title: 'Error', message: 'Tài khoản của bạn không tồn tại', type: 'error', duration: 3000 });
+            } else if (accounts[vitri].password == passlog) {
+                if(accounts[vitri].status == 0) {
+                    toast({ title: 'Warning', message: 'Tài khoản của bạn đã bị khóa', type: 'warning', duration: 3000 });
+                } else {
+                    localStorage.setItem('currentuser', JSON.stringify(accounts[vitri]));
+                    toast({ title: 'Success', message: 'Đăng nhập thành công', type: 'success', duration: 3000 });
+                    closeModal();
+                    kiemtradangnhap();
+                    checkAdmin();
+                    updateAmount();
+                }
+            } else {
+                toast({ title: 'Warning', message: 'Sai mật khẩu', type: 'warning', duration: 3000 });
+            }
+        }
+    })
+
+    // Kiểm tra xem có tài khoản đăng nhập không ?
+    function kiemtradangnhap() {
+        let currentUser = localStorage.getItem('currentuser');
+        if (currentUser != null) {
+            let user = JSON.parse(currentUser);
+            document.querySelector('.auth-container').innerHTML = `<span class="text-dndk">Tài khoản</span>
+                <span class="text-tk">${user.fullname} <i class="fa-sharp fa-solid fa-caret-down"></span>`
+            document.querySelector('.header-middle-right-menu').innerHTML = `<li><a href="javascript:;" onclick="myAccount()"><i class="fa-light fa-circle-user"></i> Tài khoản của tôi</a></li>
+                <li><a href="javascript:;" onclick="orderHistory()"><i class="fa-regular fa-bags-shopping"></i> Đơn hàng đã mua</a></li>
+                <li class="border"><a id="logout" href="javascript:;"><i class="fa-light fa-right-from-bracket"></i> Thoát tài khoản</a></li>`
+            document.querySelector('#logout').addEventListener('click',logOut)
+        }
+    }
+
+    function logOut() {
+        let accounts = JSON.parse(localStorage.getItem('accounts'));
+        user = JSON.parse(localStorage.getItem('currentuser'));
+        let vitri = accounts.findIndex(item => item.phone == user.phone)
+        accounts[vitri].cart.length = 0;
+        for (let i = 0; i < user.cart.length; i++) {
+            accounts[vitri].cart[i] = user.cart[i];
+        }
+        localStorage.setItem('accounts', JSON.stringify(accounts));
+        localStorage.removeItem('currentuser');
+        window.location = "/";
+    }
+
+    function checkAdmin() {
+        let user = JSON.parse(localStorage.getItem('currentuser'));
+        if(user && user.userType == 1) {
+            let node = document.createElement(`li`);
+            node.innerHTML = `<a href="./admin.html"><i class="fa-light fa-gear"></i> Quản lý cửa hàng</a>`
+            document.querySelector('.header-middle-right-menu').prepend(node);
+        } 
+    }
+
+    window.onload = kiemtradangnhap();
+    window.onload = checkAdmin();
+
+    // Chuyển đổi trang chủ và trang thông tin tài khoản
+    function myAccount() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        document.getElementById('trangchu').classList.add('hide');
+        document.getElementById('order-history').classList.remove('open');
+        document.getElementById('account-user').classList.add('open');
+        userInfo();
+    }
 
