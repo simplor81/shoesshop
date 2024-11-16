@@ -316,7 +316,7 @@ header {
 .header-middle-right-item i {
     font-size: 25px;
     margin-right: 10px;
-    color: var(--black);
+    color: var(--yellow);
 }
 
 .text-tk i {
