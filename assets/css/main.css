@@ -9,7 +9,7 @@
     --white: #fff;
     --black: black  ;
     --text-color: #333;
-    --yellow: #FFD15C;
+    --yellow: #FFD700;
 }
 
 ul,
@@ -937,7 +937,7 @@ header {
 }
 
 .form-control:focus {
-    border-color: var(--yellow);
+    border-color: var(--text-color);
 }
 
 .form-message {
@@ -951,7 +951,7 @@ header {
     height: 40px;
     outline: none;
     border: none;
-    color: var(--white);
+    color: rgb(255, 255, 255);
     background-color: var(--yellow);
     border-radius: 5px;
     cursor: pointer;
@@ -976,7 +976,7 @@ header {
 
 .change-login a,
 label a {
-    color: var(--black);
+    color:rgb(225, 24, 24);
 }
 
 .change-login {
@@ -1184,3 +1184,18 @@ label a {
     height:80px;
 }
 
+
+
+.copyright-wrap {
+    background: #f3f5f7;
+    color: var(--text-color);
+    margin: unset;
+    padding: 18px 0;
+    border-top: 1px solid #e6e6e6;
+}
+
+.copyright-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
