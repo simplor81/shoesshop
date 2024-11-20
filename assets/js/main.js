@@ -46,6 +46,19 @@
         }
     }
 
+    function selectSize(button) {
+        // Xóa class 'selected' khỏi tất cả các nút size
+        document.querySelectorAll('.size-button').forEach(btn => {
+            btn.classList.remove('selected');
+        });
+    
+        // Thêm class 'selected' vào nút được nhấn
+        button.classList.add('selected');
+    }
+
+
+   
+
 
     // // Open Search Advanced
     document.querySelector(".filter-btn").addEventListener("click",(e) => {
@@ -128,10 +141,10 @@
                         <article class="card-product">
                             <div class="card-header">
                                 <a href="#" class="card-image-link" onclick="detailProduct(${product.id})">
-                                    <img class="card-image" src="${product.img}" alt="${product.title}">
+                                    <img class="card-image" src="${product.img[0]}" alt="${product.title}">
                                 </a>
-                            </div>
-                            <div class="shoes-info">
+                                </div>
+                                <div class="shoes-info">
                                 <div class="card-content">
                                     <div class="card-title">
                                         <a href="#" class="card-title-link" onclick="detailProduct(${product.id})">${product.title}</a>
@@ -140,7 +153,10 @@
                                 <div class="card-footer">
                                     <div class="product-price">
                                         <span class="current-price">${vnd(product.price)}</span>
-                                    </div>
+                                    </div>  
+                                     <div class="product-buy">
+                                        <button onclick="detailProduct(${product.id})" class="card-button order-item"><i class="fa-regular fa-cart-shopping-fast"></i> Đặt ngay </button>
+                                    </div> 
                                 </div>
                             </div>
                         </article>
@@ -282,8 +298,6 @@
   // Hiển thị chuyên mục
   function showCategory(category) {
     document.getElementById('trangchu').classList.remove('hide');
-    document.getElementById('account-user').classList.remove('open');
-    document.getElementById('order-history').classList.remove('open');
     let productSearch = productAll.filter(value => {
         return value.category.toString().toUpperCase().includes(category.toUpperCase());
     })
@@ -293,7 +307,118 @@
     document.getElementById("home-title").scrollIntoView();
 }
 
-    
+function detailProduct(index) {
+    let modal = document.querySelector('.modal.product-detail');
+    let products = JSON.parse(localStorage.getItem('products'));
+    event.preventDefault();
+
+    // Tìm sản phẩm dựa trên id
+    let infoProduct = products.find(sp => sp.id === index);
+
+    // Xử lý hiển thị hình ảnh thu nhỏ
+    let thumbnailsHtml = infoProduct.img.map((imgSrc, i) => `
+        <img src="${imgSrc}" alt="Thumbnail ${i + 1}" class="thumbnail-image" onclick="document.querySelector('.main-image').src='${imgSrc}'">
+    `).join('');
+
+    // Xử lý hiển thị danh sách kích thước
+    let sizesHtml = infoProduct.size.map(size => `
+        <button class="size-button" onclick="selectSize(this)">${size}</button>
+    `).join('');
+
+    // Giao diện HTML của modal
+    let modalHtml = `
+        <div class="product-container">
+            <!-- Phần bên trái: Hình ảnh -->
+            <div class="product-images">
+                <img src="${infoProduct.img[0]}" alt="${infoProduct.title}" class="main-image">
+                <div class="thumbnails">${thumbnailsHtml}</div>
+            </div>
+
+            <!-- Phần bên phải: Thông tin sản phẩm -->
+            <div class="product-details">
+                <h1>${infoProduct.title}</h1>
+                <p class="price">${vnd(infoProduct.price)}</p>
+                <div class="sizes">
+                    <p>Size </p>
+                    ${sizesHtml}
+                </div>
+                <div class="buttons_added">
+                    <input class="minus is-form" type="button" value="-" onclick="decreasingNumber(this)">
+                    <input class="input-qty" max="100" min="1" name="" type="number" value="1">
+                    <input class="plus is-form" type="button" value="+" onclick="increasingNumber(this)">
+                </div>
+                <div class="modal-footer-control">
+                    <button class="button-dathangngay" data-product="${infoProduct.id}">Đặt ngay</button>
+                    <button class="button-dat" id="add-cart" onclick="animationCart()"><i class="fa-light fa-basket-shopping"></i></button>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // Gắn HTML vào modal và hiển thị
+    document.querySelector('#product-detail-content').innerHTML = modalHtml;
+    modal.classList.add('open');
+    document.body.style.overflow = "hidden";
+
+    // Cập nhật giá tiền khi thay đổi số lượng
+    let qtyInput = document.querySelector('.input-qty');
+    let decrementBtn = document.querySelector('.decrement');
+    let incrementBtn = document.querySelector('.increment');
+    let priceText = document.querySelector('.price');
+
+    const updatePrice = () => {
+        let quantity = parseInt(qtyInput.value) || 1;
+        let updatedPrice = infoProduct.price * quantity;
+        priceText.innerHTML = `${updatedPrice.toLocaleString()} ₫`;
+    };
+
+    decrementBtn.addEventListener('click', () => {
+        if (qtyInput.value > 1) {
+            qtyInput.value = parseInt(qtyInput.value) - 1;
+            updatePrice();
+        }
+    });
+
+    incrementBtn.addEventListener('click', () => {
+        qtyInput.value = parseInt(qtyInput.value) + 1;
+        updatePrice();
+    });
+
+    qtyInput.addEventListener('input', updatePrice);
+
+    // Thêm sản phẩm vào giỏ hàng
+    let addToCartBtn = document.querySelector('.add-to-cart');
+    addToCartBtn.addEventListener('click', () => {
+        if (localStorage.getItem('currentuser')) {
+            addCart(infoProduct.id);
+            toast({
+                title: 'Success',
+                message: 'Sản phẩm đã được thêm vào giỏ hàng!',
+                type: 'success',
+                duration: 3000
+            });
+        } else {
+            toast({
+                title: 'Warning',
+                message: 'Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng!',
+                type: 'warning',
+                duration: 3000
+            });
+        }
+    });
+
+    // Xử lý hành động mua ngay (cần định nghĩa `dathangngay`)
+    dathangngay();
+}
+
+
+function animationCart() {
+    document.querySelector(".count-product-cart").style.animation = "slidein ease 1s"
+    setTimeout(()=>{
+        document.querySelector(".count-product-cart").style.animation = "none"
+    },1000)
+}
+
     
 
 //Signup && Login Form
